@@ -43,17 +43,17 @@
           <h1 class="mb-5">Search Company and Legal Data here</h1>
         </div>
         <div class="col-md-10 col-lg-8 col-xl-7 mx-auto">
-          <form>
+          <form action ="javascript:getData()" method ="POST">
             <div class="form-row">
               <div class="col-12 col-md-9 mb-2-mb-md-0">
-                <label class="radio-inline ml-2"><input type="radio" class="mr-2 ml-2" name="optradio" checked>Din</label>
-                <label class="radio-inline ml-2"><input type="radio" class="mr-2 ml-2" name="optradio">CIN</label>
-                <label class="radio-inline ml-2"><input type="radio" class="mr-2 ml-2" name="optradio">Director Name</label>
+                <label class="radio-inline ml-2"><input type="radio" value="din" class="mr-2 ml-2" name="dataType" checked>Din</label>
+                <label class="radio-inline ml-2"><input type="radio" value="cin" class="mr-2 ml-2" name="dataType">CIN</label>
+                <label class="radio-inline ml-2"><input type="radio" value="namecin" class="mr-2 ml-2" name="dataType">Name Search</label>
               </div>
             </div>
             <div class="form-row">
               <div class="col-12 col-md-9 mb-2 mb-md-0">
-                <input type="text" class="form-control form-control-lg" placeholder="Search Company Data...">
+                <input type="text" class="form-control form-control-lg" name="searchQuery" id="searchQuery" placeholder="Search Company Data...">
               </div>
               <div class="col-12 col-md-3">
                 <button type="submit" class="btn btn-block btn-lg btn-primary">Search</button>
@@ -65,46 +65,60 @@
     </div>
   </header>
   <script>
-const toSend = {"cin":'U15496RJ1999PLC015677',
-      "apikey":'iac8UlDm0UaHPMv',
+function getData(){
+ var dataType = $('input:radio[name=dataType]:checked').val();
+ const toSend = {
+    "apikey":'iac8UlDm0UaHPMv',
       "password": 'Abuzaid@iwazir'
-    };
- const jsonString = JSON.stringify(toSend);
- console.log(jsonString);
+  };
+  var searchQuery = $("#searchQuery").val();
+ switch(dataType){
+  case 'cin':
+          url = 'https://technowire.in:5000/capi';
+          toSend['cin']=searchQuery;
+          break;
+          
+          case 'din':
+          url = 'https://technowire.in:5000/directorProfile';
+          toSend['din']=searchQuery;
+          break;
+          
+          case 'namecin':
+          url = 'https://technowire.in:5000/nameCin';
+          toSend['key']=searchQuery;
+          break; 
+ }
+    const jsonString = JSON.stringify(toSend);
+    console.log(jsonString);
 
- const xhr = new XMLHttpRequest();
+    const xhr = new XMLHttpRequest();
 
-// xhr.onload = () => console.log(this);
+    // xhr.onload = () => console.log(this);
 
-xhr.open('post','https://technowire.in:5000/capi');
-xhr.setRequestHeader('Content-Type','application/json');
-var request = xhr.send(jsonString);
-xhr.onreadystatechange = (e) => {
-var obj = JSON.parse(xhr.responseText);
-// var obj = xhr.responseText;
-// console.log(obj['company_data']['company_name']);
-var display = "<span class='head-comp'>Company Name:</span>"+obj.company_data['Company Name'] + "<br>";
-display += "Company Category: "+obj.company_data['Company Category'] + "<br>";
-display += "Company SubCategory: "+obj.company_data['Company subCategory'] + "<br>";
-display += "ROC Code: "+obj.company_data['ROC Code'] + "<br>";
-display += "Class of Company: "+obj.company_data['Class of Company'] + "<br>";
-// display += "ROC Code: "+obj.company_data[''] + "<br>";
+        xhr.open('post',url);
+        xhr.setRequestHeader('Content-Type','application/json');
+        var request = xhr.send(jsonString);
+        xhr.onreadystatechange = (e) => {
+        var obj = JSON.parse(xhr.responseText);
+        // var obj = xhr.responseText;
+        // console.log(obj['company_data']['company_name']);
 
+        var display='';
+        display += '<table class="table">';
+        $.each(obj.company_data,function(index,value){
+          if(index.length > 0)
+          display += "<tr><td><span class='head-comp'>"+index+":</span></td><td>"+ value +"</td></tr>";
+        })
+        display+= '</table>';
+        document.getElementById('maindata').innerHTML = display;
 
-
-document.getElementById('maindata').innerHTML = display;
-
-console.log(obj.company_data['Company Name']);
+//console.log(obj.company_data['Company Name']);
 // var display = document.getElementById('maindata').innerHTML;
 //   display = obj.company_data['Company Name'];
 
 console.log(xhr.responseText);
-
+}
   }
-  
- 
-
-
  </script>
 
   <!-- Icons Grid -->
