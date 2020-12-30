@@ -81,6 +81,7 @@ function getData(){
           case 'din':
           url = 'https://technowire.in:5000/directorProfile';
           toSend['din']=searchQuery;
+          objData = 'details';
           break;
           
           case 'namecin':
@@ -105,10 +106,31 @@ function getData(){
 
         var display='';
         display += '<table class="table">';
-        $.each(obj.company_data,function(index,value){
-          if(index.length > 0)
-          display += "<tr><td><span class='head-comp'>"+index+":</span></td><td>"+ value +"</td></tr>";
+          switch(dataType){
+  case 'cin':
+  $.each(obj.company_data,function(index,value){
+    if(index.length > 0 && value)
+          display += "<tr><td><span class='head-comp'>"+index.toUpperCase()+":</span></td><td>"+ value +"</td></tr>";
+        })  
+          break;
+          
+          case 'din':
+          $.each(obj.details,function(index,value){
+            if(index.length > 0 && value)
+          display += "<tr><td><span class='head-comp'>"+index.toUpperCase()+":</span></td><td>"+ value +"</td></tr>";
+        }) 
+          break;
+          
+          case 'namecin':
+          $.each(obj.company_data,function(index,value){
+          if(index.length > 0 && value)
+          display += "<tr><td><span class='head-comp'>"+index.toUpperCase()+":</span></td><td>"+ value +"</td></tr>";
         })
+          break; 
+ }
+                
+               
+        
         display+= '</table>';
         document.getElementById('maindata').innerHTML = display;
 
