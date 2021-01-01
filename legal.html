@@ -60,14 +60,22 @@
   </header>
   <script>
 function getData(){
-    $.ajaxSetup({
-    headers: { 'Authorization': 'Token 950ab07a41a0147083b3d437e69cf4fde453966e' }
+  var searchQuery = $('#searchQuery').val();
+  alert(searchQuery);
+  $.ajax({
+    type:"POST",
+    url: "https://api.indiankanoon.org/search/",
+    headers: {"Authorization": "Token 950ab07a41a0147083b3d437e69cf4fde453966e",
+    "Access-Control-Allow-Origin":  "http://127.0.0.1:5500",
+  },
+    data:{"formInput":"airtel"},
+    dataType:"JSON",
+    success:function (data){
+      console.log(data);
+    }
+  
 });
-
-// Sends your custom header
-$.ajax({ url: 'foo/bar' });
- }
-                
+}              
                
         
  </script>
